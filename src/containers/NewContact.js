@@ -4,9 +4,9 @@ import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { s3Upload } from "../libs/awsLib";
 import config from "../config";
-import "./NewNote.css";
+import "./NewContact.css";
 
-export default function NewNote(props) {
+export default function NewContact(props) {
     const file = useRef(null);
     const [content, setContent] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +37,7 @@ export default function NewNote(props) {
                 ? await s3Upload(file.current)
                 : null;
 
-            await createNote({ content, attachment });
+            await createContact({ content, attachment });
             props.history.push("/");
         } catch (e) {
             alert(e);
@@ -45,14 +45,14 @@ export default function NewNote(props) {
         }
     }
 
-    function createNote(note) {
+    function createContact(contact) {
         return API.post("contacts", "/contacts", {
-            body: note
+            body: contact
         });
     }
 
     return (
-        <div className="NewNote">
+        <div className="NewContact">
             <form onSubmit={handleSubmit}>
                 <FormGroup controlId="content">
                     <FormControl

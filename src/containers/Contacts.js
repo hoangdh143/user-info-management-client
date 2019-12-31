@@ -1,34 +1,34 @@
 import React, { useRef, useState, useEffect } from "react";
 import { API, Storage } from "aws-amplify";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { s3Upload } from "../libs/awsLib";
 import config from "../config";
-import "./Notes.css";
+import "./Contacts.css";
 
-export default function Notes(props) {
+export default function Contacts(props) {
     const file = useRef(null);
-    const [note, setNote] = useState(null);
+    const [contact, setContact] = useState(null);
     const [content, setContent] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
-        function loadNote() {
+        function loadContact() {
             return API.get("contacts", `/contacts/${props.match.params.id}`);
         }
 
         async function onLoad() {
             try {
-                const note = await loadNote();
-                const { content, attachment } = note;
+                const contact = await loadContact();
+                const { content, attachment } = contact;
 
                 if (attachment) {
-                    note.attachmentURL = await Storage.vault.get(attachment);
+                    contact.attachmentURL = await Storage.vault.get(attachment);
                 }
 
                 setContent(content);
-                setNote(note);
+                setContact(contact);
             } catch (e) {
                 alert(e);
             }
@@ -49,9 +49,9 @@ export default function Notes(props) {
         file.current = event.target.files[0];
     }
 
-    function saveNote(note) {
+    function saveContact(contact) {
         return API.put("contacts", `/contacts/${props.match.params.id}`, {
-            body: note
+            body: contact
         });
     }
 
@@ -75,9 +75,9 @@ export default function Notes(props) {
                 attachment = await s3Upload(file.current);
             }
 
-            await saveNote({
+            await saveContact({
                 content,
-                attachment: attachment || note.attachment
+                attachment: attachment || contact.attachment
             });
             props.history.push("/");
         } catch (e) {
@@ -86,7 +86,7 @@ export default function Notes(props) {
         }
     }
 
-    function deleteNote() {
+    function deleteContact() {
         return API.del("contacts", `/contacts/${props.match.params.id}`);
     }
 
@@ -94,7 +94,7 @@ export default function Notes(props) {
         event.preventDefault();
 
         const confirmed = window.confirm(
-            "Are you sure you want to delete this note?"
+            "Are you sure you want to delete this contact?"
         );
 
         if (!confirmed) {
@@ -104,7 +104,7 @@ export default function Notes(props) {
         setIsDeleting(true);
 
         try {
-            await deleteNote();
+            await deleteContact();
             props.history.push("/");
         } catch (e) {
             alert(e);
@@ -113,8 +113,8 @@ export default function Notes(props) {
     }
 
     return (
-        <div className="Notes">
-            {note && (
+        <div className="Contacts">
+            {contact && (
                 <form onSubmit={handleSubmit}>
                     <FormGroup controlId="content">
                         <FormControl
@@ -122,24 +122,6 @@ export default function Notes(props) {
                             componentClass="textarea"
                             onChange={e => setContent(e.target.value)}
                         />
-                    </FormGroup>
-                    {note.attachment && (
-                        <FormGroup>
-                            <ControlLabel>Attachment</ControlLabel>
-                            <FormControl.Static>
-                                <a
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href={note.attachmentURL}
-                                >
-                                    {formatFilename(note.attachment)}
-                                </a>
-                            </FormControl.Static>
-                        </FormGroup>
-                    )}
-                    <FormGroup controlId="file">
-                        {!note.attachment && <ControlLabel>Attachment</ControlLabel>}
-                        <FormControl onChange={handleFileChange} type="file" />
                     </FormGroup>
                     <LoaderButton
                         block

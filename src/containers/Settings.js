@@ -9,7 +9,7 @@ export default function Settings(props) {
     const [isLoading, setIsLoading] = useState(false);
 
     function billUser(details) {
-        return API.post("notes", "/billing", {
+        return API.post("contacts", "/billing", {
             body: details
         });
     }
