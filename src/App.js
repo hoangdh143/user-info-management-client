@@ -12,7 +12,6 @@ function App(props) {
 
     useEffect(() => {
         onLoad();
-        console.log("loading user!");
         Hub.listen("auth", ({ payload: { event, data } }) => {
             switch (event) {
                 case "signIn":

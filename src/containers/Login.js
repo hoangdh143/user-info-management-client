@@ -68,8 +68,8 @@ export default function Login(props) {
                     Login
                 </LoaderButton>
             </form>
-            <button onClick={() => {Auth.federatedSignIn({provider: 'facebook'})}}>Login with Facebook</button>
-            <button onClick={() => {Auth.federatedSignIn({provider: 'google'})}}>Login with Google</button>
+            <button onClick={() => {Auth.federatedSignIn({provider: 'Facebook'})}}>Login with Facebook</button>
+            <button onClick={() => {Auth.federatedSignIn({provider: 'Google'})}}>Login with Google</button>
 
             {/*<div className="g-signin2" data-onsuccess="onSignIn">Sign In With Google</div>*/}
         </div>
