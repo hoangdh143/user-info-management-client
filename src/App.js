@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Auth } from "aws-amplify";
+import { Auth, Hub } from "aws-amplify";
 import { Link, withRouter } from "react-router-dom";
 import { Nav, Navbar, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
@@ -12,6 +12,19 @@ function App(props) {
 
     useEffect(() => {
         onLoad();
+        console.log("loading user!");
+        Hub.listen("auth", ({ payload: { event, data } }) => {
+            switch (event) {
+                case "signIn":
+                    userHasAuthenticated(true);
+                    break;
+                case "signOut":
+                    userHasAuthenticated(false);
+                    break;
+                case "customOAuthState":
+                    console.log(data);
+            }
+        });
     }, []);
 
     async function onLoad() {
@@ -20,6 +33,7 @@ function App(props) {
             userHasAuthenticated(true);
         }
         catch(e) {
+            console.log(e);
             if (e !== 'No current user') {
                 alert(e);
             }

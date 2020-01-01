@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
@@ -28,6 +28,14 @@ export default function Login(props) {
             alert(e.message);
             setIsLoading(false);
         }
+    }
+
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
     }
 
     return (
@@ -60,6 +68,10 @@ export default function Login(props) {
                     Login
                 </LoaderButton>
             </form>
+            <button onClick={() => {Auth.federatedSignIn({provider: 'facebook'})}}>Login with Facebook</button>
+            <button onClick={() => {Auth.federatedSignIn({provider: 'google'})}}>Login with Google</button>
+
+            {/*<div className="g-signin2" data-onsuccess="onSignIn">Sign In With Google</div>*/}
         </div>
     );
 }
