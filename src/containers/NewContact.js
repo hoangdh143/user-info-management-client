@@ -1,43 +1,27 @@
-import React, { useRef, useState } from "react";
-import { API } from "aws-amplify";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import React, {useRef, useState} from "react";
+import {API} from "aws-amplify";
 import LoaderButton from "../components/LoaderButton";
-import { s3Upload } from "../libs/awsLib";
+import {s3Upload} from "../libs/awsLib";
 import config from "../config";
 import "./NewContact.css";
+import {Form, Select, Input, Button, Typography} from 'antd';
+
+const {Title} = Typography;
+const {Option} = Select;
 
 export default function NewContact(props) {
-    const file = useRef(null);
-    const [content, setContent] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
+    const [address, setAddress] = useState("");
+
     const [isLoading, setIsLoading] = useState(false);
-
-    function validateForm() {
-        return content.length > 0;
-    }
-
-    function handleFileChange(event) {
-        file.current = event.target.files[0];
-    }
 
     async function handleSubmit(event) {
         event.preventDefault();
-
-        if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
-            alert(
-                `Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE /
-                1000000} MB.`
-            );
-            return;
-        }
-
         setIsLoading(true);
-
         try {
-            const attachment = file.current
-                ? await s3Upload(file.current)
-                : null;
-
-            await createContact({ content, attachment });
+            await createContact({name, phone, email, address});
             props.history.push("/");
         } catch (e) {
             alert(e);
@@ -45,37 +29,41 @@ export default function NewContact(props) {
         }
     }
 
-    function createContact(contact) {
-        return API.post("contacts", "/contacts", {
+    async function createContact(contact) {
+        const token = await API.get("contacts", "/token", {});
+        return API.post("contacts", `/contacts?token=${token}`, {
             body: contact
         });
     }
 
     return (
         <div className="NewContact">
-            <form onSubmit={handleSubmit}>
-                <FormGroup controlId="content">
-                    <FormControl
-                        value={content}
-                        componentClass="textarea"
-                        onChange={e => setContent(e.target.value)}
-                    />
-                </FormGroup>
-                <FormGroup controlId="file">
-                    <ControlLabel>Attachment</ControlLabel>
-                    <FormControl onChange={handleFileChange} type="file" />
-                </FormGroup>
-                <LoaderButton
-                    block
-                    type="submit"
-                    bsSize="large"
-                    bsStyle="primary"
-                    isLoading={isLoading}
-                    disabled={!validateForm()}
-                >
-                    Create
-                </LoaderButton>
-            </form>
+            <Title>Create new contact</Title>
+            <Form labelCol={{span: 5}} wrapperCol={{span: 12}} onSubmit={handleSubmit}>
+                <Form.Item label="Name">
+                    <Input type="text" value={name} onChange={e => setName(e.target.value)}/>
+                </Form.Item>
+                <Form.Item label="Email">
+                    <Input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
+                </Form.Item>
+                <Form.Item label="Phone">
+                    <Input type="text" value={phone} onChange={e => setPhone(e.target.value)}/>
+                </Form.Item>
+                <Form.Item label="Address">
+                    <Input type="text" value={address} onChange={e => setAddress(e.target.value)}/>
+                </Form.Item>
+                <Form.Item wrapperCol={{span: 12, offset: 5}}>
+                    <LoaderButton
+                        block
+                        type="submit"
+                        bsSize="large"
+                        bsStyle="primary"
+                        isLoading={isLoading}
+                    >
+                        Create
+                    </LoaderButton>
+                </Form.Item>
+            </Form>
         </div>
     );
 }

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Auth } from "aws-amplify";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import React, {useState, useEffect} from "react";
+import {Auth} from "aws-amplify";
+import {FormGroup, FormControl, ControlLabel, Button} from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import { useFormFields } from "../libs/hooksLib";
+import {useFormFields} from "../libs/hooksLib";
 import "./Login.css";
 
 export default function Login(props) {
@@ -67,10 +67,17 @@ export default function Login(props) {
                 >
                     Login
                 </LoaderButton>
-            </form>
-            <button onClick={() => {Auth.federatedSignIn({provider: 'Facebook'})}}>Login with Facebook</button>
-            <button onClick={() => {Auth.federatedSignIn({provider: 'Google'})}}>Login with Google</button>
 
+                <div className="social-login-buttons">
+                    <Button variant="outline-primary" onClick={() => {
+                        Auth.federatedSignIn({provider: 'Facebook'})
+                    }}>Login with Facebook</Button>
+
+                    <Button variant="outline-primary" onClick={() => {
+                        Auth.federatedSignIn({provider: 'Google'})
+                    }}>Login with Google</Button>
+                </div>
+            </form>
             {/*<div className="g-signin2" data-onsuccess="onSignIn">Sign In With Google</div>*/}
         </div>
     );

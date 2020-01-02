@@ -4,6 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
 import "./Home.css";
 import {Link} from "react-router-dom";
+import ContactTable from "../components/ContactTable";
 
 export default function Home(props) {
     const [contacts, setContacts] = useState([]);
@@ -33,24 +34,8 @@ export default function Home(props) {
     }
 
     function renderContactsList(contacts) {
-        return [{}].concat(contacts).map((contact, i) =>
-            i !== 0 ? (
-                <LinkContainer key={contact.contactId} to={`/contacts/${contact.contactId}`}>
-                    <ListGroupItem header={contact.email.trim().split("\n")[0]}>
-                        <div>Name: {contact.name}</div>
-                        <div>Phone: {contact.phone}</div>
-                        {"Created: " + new Date(contact.createdAt).toLocaleString()}
-                    </ListGroupItem>
-                </LinkContainer>
-            ) : (
-                <LinkContainer key="new" to="/contacts/new">
-                    <ListGroupItem>
-                        <h4>
-                            <b>{"\uFF0B"}</b> Create a new contact
-                        </h4>
-                    </ListGroupItem>
-                </LinkContainer>
-            )
+        return (
+            <ContactTable dataSource={contacts}/>
         );
     }
 
@@ -84,6 +69,13 @@ export default function Home(props) {
 
     return (
         <div className="Home">
+            <LinkContainer key="new" to="/contacts/new">
+                <ListGroupItem>
+                    <h4>
+                        <b>{"\uFF0B"}</b> Create a new contact
+                    </h4>
+                </ListGroupItem>
+            </LinkContainer>
             {props.isAuthenticated ? renderContacts() : renderLander()}
         </div>
     );

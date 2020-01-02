@@ -5,6 +5,7 @@ import { Nav, Navbar, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Routes from "./Routes";
 import "./App.css";
+import 'antd/dist/antd.css';
 
 function App(props) {
     const [isAuthenticating, setIsAuthenticating] = useState(true);
