@@ -15,7 +15,7 @@ const dev = {
         IDENTITY_POOL_ID: "ap-southeast-1:28085a11-b971-4453-bad5-6ea208108890"
     },
     authentication: {
-        redirect_url: 'http://localhost:3000/',
+        redirect_url: process.env.REACT_APP_REDIRECT_URL || 'http://localhost:3000',
         oauth_domain: 'dev-user-pool.auth.ap-southeast-1.amazoncognito.com',
     }
 };
