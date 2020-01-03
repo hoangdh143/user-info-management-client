@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify from 'aws-amplify';
 import { BrowserRouter as Router } from 'react-router-dom';
 import config from './config';
 import './index.css';
@@ -9,10 +9,10 @@ import * as serviceWorker from './serviceWorker';
 
 
 const oauth = {
-  domain: 'dev-user-pool.auth.ap-southeast-1.amazoncognito.com',
+  domain: config.authentication.oauth_domain,
   // scope: ['email', 'profile', 'openid'],
-  redirectSignIn: 'http://localhost:3000/',
-  redirectSignOut: 'http://localhost:3000/',
+  redirectSignIn: config.authentication.redirect_url,
+  redirectSignOut: config.authentication.redirect_url,
   responseType: 'code' // or 'token', note that REFRESH token will only be generated when the responseType is code
 };
 
