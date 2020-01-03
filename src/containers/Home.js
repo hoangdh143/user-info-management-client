@@ -4,9 +4,10 @@ import { LinkContainer } from "react-router-bootstrap";
 import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
 import "./Home.css";
 import {Link} from "react-router-dom";
+import ContactTable from "../components/ContactTable";
 
 export default function Home(props) {
-    const [notes, setNotes] = useState([]);
+    const [contacts, setContacts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -16,8 +17,8 @@ export default function Home(props) {
             }
 
             try {
-                const notes = await loadNotes();
-                setNotes(notes);
+                const contacts = await loadContacts();
+                setContacts(contacts);
             } catch (e) {
                 alert(e);
             }
@@ -28,35 +29,21 @@ export default function Home(props) {
         onLoad();
     }, [props.isAuthenticated]);
 
-    function loadNotes() {
+    function loadContacts() {
         return API.get("contacts", "/contacts");
     }
 
-    function renderNotesList(notes) {
-        return [{}].concat(notes).map((note, i) =>
-            i !== 0 ? (
-                <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}>
-                    <ListGroupItem header={note.content.trim().split("\n")[0]}>
-                        {"Created: " + new Date(note.createdAt).toLocaleString()}
-                    </ListGroupItem>
-                </LinkContainer>
-            ) : (
-                <LinkContainer key="new" to="/notes/new">
-                    <ListGroupItem>
-                        <h4>
-                            <b>{"\uFF0B"}</b> Create a new note
-                        </h4>
-                    </ListGroupItem>
-                </LinkContainer>
-            )
+    function renderContactsList(contacts) {
+        return (
+            <ContactTable dataSource={contacts}/>
         );
     }
 
     function renderLander() {
         return (
             <div className="lander">
-                <h1>Scratch</h1>
-                <p>A simple note taking app</p>
+                <h1>User Info Management</h1>
+                <p>A simple contact taking app</p>
                 <div>
                     <Link to="/login" className="btn btn-info btn-lg">
                         Login
@@ -69,12 +56,12 @@ export default function Home(props) {
         );
     }
 
-    function renderNotes() {
+    function renderContacts() {
         return (
-            <div className="notes">
-                <PageHeader>Your Notes</PageHeader>
+            <div className="contacts">
+                <PageHeader>Your Contacts</PageHeader>
                 <ListGroup>
-                    {!isLoading && renderNotesList(notes)}
+                    {!isLoading && renderContactsList(contacts)}
                 </ListGroup>
             </div>
         );
@@ -82,7 +69,14 @@ export default function Home(props) {
 
     return (
         <div className="Home">
-            {props.isAuthenticated ? renderNotes() : renderLander()}
+            <LinkContainer key="new" to="/contacts/new">
+                <ListGroupItem>
+                    <h4>
+                        <b>{"\uFF0B"}</b> Create a new contact
+                    </h4>
+                </ListGroupItem>
+            </LinkContainer>
+            {props.isAuthenticated ? renderContacts() : renderLander()}
         </div>
     );
 }

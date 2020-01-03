@@ -7,6 +7,15 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+
+const oauth = {
+  domain: config.authentication.oauth_domain,
+  // scope: ['email', 'profile', 'openid'],
+  redirectSignIn: config.authentication.redirect_url,
+  redirectSignOut: config.authentication.redirect_url,
+  responseType: 'code' // or 'token', note that REFRESH token will only be generated when the responseType is code
+};
+
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -28,8 +37,12 @@ Amplify.configure({
         region: config.apiGateway.REGION
       },
     ]
-  }
+  },
+  oauth
 });
+
+
+// Auth.configure({oauth});
 
 ReactDOM.render(
   <Router>

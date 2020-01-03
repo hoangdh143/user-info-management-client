@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Auth } from "aws-amplify";
+import { Auth, Hub } from "aws-amplify";
 import { Link, withRouter } from "react-router-dom";
 import { Nav, Navbar, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Routes from "./Routes";
 import "./App.css";
+import 'antd/dist/antd.css';
 
 function App(props) {
     const [isAuthenticating, setIsAuthenticating] = useState(true);
@@ -12,6 +13,18 @@ function App(props) {
 
     useEffect(() => {
         onLoad();
+        Hub.listen("auth", ({ payload: { event, data } }) => {
+            switch (event) {
+                case "signIn":
+                    userHasAuthenticated(true);
+                    break;
+                case "signOut":
+                    userHasAuthenticated(false);
+                    break;
+                case "customOAuthState":
+                    console.log(data);
+            }
+        });
     }, []);
 
     async function onLoad() {
@@ -20,6 +33,7 @@ function App(props) {
             userHasAuthenticated(true);
         }
         catch(e) {
+            console.log(e);
             if (e !== 'No current user') {
                 alert(e);
             }
@@ -42,7 +56,7 @@ function App(props) {
                 <Navbar fluid collapseOnSelect>
                     <Navbar.Header>
                         <Navbar.Brand>
-                            <Link to="/">Scratch</Link>
+                            <Link to="/">User Info Management</Link>
                         </Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
