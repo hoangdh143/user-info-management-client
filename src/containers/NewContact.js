@@ -1,13 +1,11 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import {API} from "aws-amplify";
 import LoaderButton from "../components/LoaderButton";
-import {s3Upload} from "../libs/awsLib";
-import config from "../config";
 import "./NewContact.css";
-import {Form, Select, Input, Button, Typography} from 'antd';
+import {Form, Input, Typography} from 'antd';
+import 'react-phone-number-input/style.css';
 
 const {Title} = Typography;
-const {Option} = Select;
 
 export default function NewContact(props) {
     const [name, setName] = useState("");

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import {Table} from 'antd';
+import {Checkbox, Table} from 'antd';
 
 const columns = [
     {
@@ -18,14 +18,19 @@ const columns = [
         key: 'phone',
     },
     {
-        title: 'Created at',
-        dataIndex: 'createAt',
-        key: 'createAt',
+        title: 'Select to send message',
+        dataIndex: 'selected',
+        key: 'selected',
+        render: (text, record) => {
+            return (<>
+                <Checkbox onChange={e => {record.addToMessageQueue(e, record)}}/>
+            </>)
+        }
     },
 ];
 
-export default function ContactTable({dataSource}) {
+export default function ContactTable({dataSource, ...props}) {
     return(
-        <Table dataSource={dataSource} columns={columns} />
+        <Table dataSource={dataSource} columns={columns} {...props}/>
     );
 }
