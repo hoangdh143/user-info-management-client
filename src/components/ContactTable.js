@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import {Checkbox, Table} from 'antd';
+import {Checkbox, DatePicker, Table} from 'antd';
+import moment from "moment";
 
 const columns = [
     {
@@ -16,6 +17,12 @@ const columns = [
         title: 'Phone',
         dataIndex: 'phone',
         key: 'phone',
+    },
+    {
+        title: 'Birthday',
+        dataIndex: 'birthday',
+        key: 'birthday',
+        render: text => text ? <DatePicker disabled value={moment(text)}/> : ''
     },
     {
         title: 'Select to send message',

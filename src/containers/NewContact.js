@@ -2,8 +2,9 @@ import React, {useState} from "react";
 import {API} from "aws-amplify";
 import LoaderButton from "../components/LoaderButton";
 import "./NewContact.css";
-import {Form, Input, Typography} from 'antd';
-import 'react-phone-number-input/style.css';
+import {DatePicker, Form, Input, Typography} from 'antd';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 const {Title} = Typography;
 
@@ -12,6 +13,7 @@ export default function NewContact(props) {
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
     const [address, setAddress] = useState("");
+    const [birthday, setBirthday] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -19,7 +21,7 @@ export default function NewContact(props) {
         event.preventDefault();
         setIsLoading(true);
         try {
-            await createContact({name, phone, email, address});
+            await createContact({name, phone, email, address, birthday});
             props.history.push("/");
         } catch (e) {
             alert(e);
@@ -45,7 +47,10 @@ export default function NewContact(props) {
                     <Input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
                 </Form.Item>
                 <Form.Item label="Phone">
-                    <Input type="text" value={phone} onChange={e => setPhone(e.target.value)}/>
+                    <PhoneInput country={'us'} value={phone} onChange={phone => setPhone(phone)}/>
+                </Form.Item>
+                <Form.Item label="Birthday">
+                    <DatePicker value={birthday} onChange={setBirthday} />
                 </Form.Item>
                 <Form.Item label="Address">
                     <Input type="text" value={address} onChange={e => setAddress(e.target.value)}/>
